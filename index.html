@@ -18,6 +18,8 @@
             --white: #ffffff;
             --shadow: rgba(44, 44, 44, 0.08);
             --shadow-hover: rgba(44, 44, 44, 0.15);
+            --glass: rgba(245, 240, 232, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.3);
         }
 
         * {
@@ -34,7 +36,7 @@
             font-family: 'Inter', 'Segoe UI', sans-serif;
             background-color: var(--bg);
             color: var(--text);
-            line-height: 1.6;
+            line-height: 1.7;
             overflow-x: hidden;
         }
 
@@ -56,7 +58,7 @@
             font-family: 'Playfair Display', Georgia, serif;
         }
 
-        /* Navigation */
+        /* ===== NAVIGATION ===== */
         nav {
             position: fixed;
             top: 0;
@@ -64,14 +66,16 @@
             width: 100%;
             z-index: 1000;
             padding: 1rem 2rem;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             background: transparent;
         }
 
         nav.scrolled {
-            background: rgba(237, 233, 222, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px var(--shadow);
+            background: rgba(237, 233, 222, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 4px 30px rgba(44, 44, 44, 0.08);
+            padding: 0.7rem 2rem;
         }
 
         .nav-container {
@@ -88,6 +92,9 @@
             font-weight: 700;
             color: var(--text);
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .nav-links {
@@ -103,17 +110,20 @@
             font-size: 0.95rem;
             transition: color 0.3s;
             position: relative;
+            padding-bottom: 4px;
         }
 
         .nav-links a::after {
             content: '';
             position: absolute;
-            bottom: -4px;
-            left: 0;
+            bottom: 0;
+            left: 50%;
             width: 0;
             height: 2px;
-            background: var(--accent1);
-            transition: width 0.3s;
+            background: linear-gradient(90deg, var(--accent1), var(--accent2));
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+            border-radius: 2px;
         }
 
         .nav-links a:hover::after {
@@ -130,6 +140,10 @@
             border: none;
             cursor: pointer;
             padding: 0.5rem;
+            z-index: 1001;
+            position: relative;
+            width: 32px;
+            height: 32px;
         }
 
         .mobile-menu-btn span {
@@ -137,11 +151,29 @@
             width: 24px;
             height: 2px;
             background: var(--text);
-            margin: 5px 0;
+            margin: 0;
             transition: all 0.3s;
+            position: absolute;
+            left: 4px;
         }
 
-        /* Hero Section */
+        .mobile-menu-btn span:nth-child(1) { top: 8px; }
+        .mobile-menu-btn span:nth-child(2) { top: 15px; }
+        .mobile-menu-btn span:nth-child(3) { top: 22px; }
+
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: rotate(45deg);
+            top: 15px;
+        }
+        .mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .mobile-menu-btn.active span:nth-child(3) {
+            transform: rotate(-45deg);
+            top: 15px;
+        }
+
+        /* ===== HERO SECTION ===== */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -151,122 +183,272 @@
             overflow: hidden;
         }
 
-        .hero-bg {
+        .hero-video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -2;
+            background: linear-gradient(
+                135deg,
+                rgba(237, 233, 222, 0.82) 0%,
+                rgba(212, 207, 196, 0.75) 20%,
+                rgba(200, 149, 108, 0.55) 40%,
+                rgba(122, 158, 126, 0.45) 60%,
+                rgba(91, 127, 165, 0.4) 80%,
+                rgba(237, 233, 222, 0.7) 100%
+            );
         }
 
-        .hero-gradient {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ede9de 0%, #d4cfc4 25%, #c8956c 50%, #7a9e7e 75%, #5b7fa5 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .hero-particles {
+        .hero-overlay-2 {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            overflow: hidden;
+            background: radial-gradient(ellipse at 30% 20%, rgba(245, 240, 232, 0.3) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, rgba(200, 149, 108, 0.15) 0%, transparent 50%);
         }
 
-        .particle {
+        /* Floating geometric shapes */
+        .floating-shapes {
             position: absolute;
-            width: 6px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            animation: float linear infinite;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
         }
 
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
+        .shape {
+            position: absolute;
+            opacity: 0.12;
+            animation: floatShape 20s ease-in-out infinite;
+        }
+
+        .shape-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid var(--accent1);
+            top: 15%;
+            left: 8%;
+            animation-delay: 0s;
+        }
+
+        .shape-square {
+            width: 80px;
+            height: 80px;
+            border: 2px solid var(--accent2);
+            transform: rotate(45deg);
+            top: 60%;
+            left: 85%;
+            animation-delay: -5s;
+            animation-duration: 25s;
+        }
+
+        .shape-triangle {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 86px solid var(--accent3);
+            top: 70%;
+            left: 15%;
+            animation-delay: -10s;
+            animation-duration: 22s;
+        }
+
+        .shape-ring {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--accent1);
+            top: 25%;
+            left: 75%;
+            animation-delay: -8s;
+            animation-duration: 18s;
+        }
+
+        .shape-dots {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, var(--accent2) 2px, transparent 2px);
+            background-size: 10px 10px;
+            top: 45%;
+            left: 50%;
+            animation-delay: -12s;
+            animation-duration: 30s;
+        }
+
+        .shape-line {
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent1), transparent);
+            top: 80%;
+            left: 60%;
+            animation-delay: -3s;
+            animation-duration: 16s;
+        }
+
+        @keyframes floatShape {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
             }
-            10% {
-                opacity: 1;
+            25% {
+                transform: translate(30px, -30px) rotate(90deg);
             }
-            90% {
-                opacity: 1;
+            50% {
+                transform: translate(-20px, 20px) rotate(180deg);
             }
-            100% {
-                transform: translateY(-10vh) rotate(720deg);
-                opacity: 0;
+            75% {
+                transform: translate(20px, 30px) rotate(270deg);
             }
         }
 
         .hero-content {
             text-align: center;
-            max-width: 800px;
+            max-width: 900px;
             padding: 2rem;
             position: relative;
             z-index: 1;
         }
 
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            background: rgba(245, 240, 232, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--accent1);
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
         .hero-content h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
             font-weight: 800;
-            color: var(--white);
-            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            color: var(--text);
+            text-shadow: 
+                0 0 40px rgba(245, 240, 232, 0.8),
+                0 4px 20px rgba(0, 0, 0, 0.1),
+                0 0 80px rgba(200, 149, 108, 0.15);
             margin-bottom: 1.5rem;
-            line-height: 1.2;
+            line-height: 1.15;
+            animation: fadeInUp 1s ease-out 0.2s both;
         }
 
         .hero-content p {
-            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-            color: rgba(255, 255, 255, 0.9);
+            font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+            color: #4a4a4a;
             margin-bottom: 2.5rem;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+            animation: fadeInUp 1s ease-out 0.4s both;
         }
 
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Buttons */
         .btn {
             display: inline-block;
             padding: 1rem 2.5rem;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             border: none;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-primary {
-            background: var(--accent1);
+            background: linear-gradient(135deg, var(--accent1), #d4a574);
             color: var(--white);
-            box-shadow: 0 8px 30px rgba(200, 149, 108, 0.4);
+            box-shadow: 0 8px 30px rgba(200, 149, 108, 0.35);
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 8px 30px rgba(200, 149, 108, 0.35),
+                            0 0 0 0 rgba(200, 149, 108, 0.4);
+            }
+            50% {
+                box-shadow: 0 8px 40px rgba(200, 149, 108, 0.5),
+                            0 0 0 12px rgba(200, 149, 108, 0);
+            }
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(200, 149, 108, 0.5);
-            background: #b8845c;
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, #b8845c, var(--accent1));
         }
 
         .btn-secondary {
-            background: transparent;
-            color: var(--white);
-            border: 2px solid rgba(255, 255, 255, 0.6);
+            background: rgba(245, 240, 232, 0.5);
+            backdrop-filter: blur(8px);
+            color: var(--text);
+            border: 2px solid rgba(200, 149, 108, 0.3);
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--white);
+            background: rgba(245, 240, 232, 0.8);
+            border-color: var(--accent1);
+            transform: translateY(-3px);
         }
 
         .scroll-indicator {
@@ -275,13 +457,14 @@
             left: 50%;
             transform: translateX(-50%);
             animation: bounce 2s infinite;
+            z-index: 2;
         }
 
         .scroll-indicator span {
             display: block;
             width: 24px;
             height: 40px;
-            border: 2px solid rgba(255, 255, 255, 0.6);
+            border: 2px solid rgba(44, 44, 44, 0.4);
             border-radius: 12px;
             position: relative;
         }
@@ -294,7 +477,7 @@
             transform: translateX(-50%);
             width: 4px;
             height: 8px;
-            background: rgba(255, 255, 255, 0.8);
+            background: var(--accent1);
             border-radius: 2px;
             animation: scrollDot 2s infinite;
         }
@@ -309,9 +492,22 @@
             100% { opacity: 0; top: 20px; }
         }
 
-        /* Section Styles */
+        /* ===== SECTION STYLES ===== */
         section {
-            padding: 6rem 2rem;
+            padding: 7rem 2rem;
+            position: relative;
+        }
+
+        /* Section gradient overlays */
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent1), transparent);
+            opacity: 0.5;
         }
 
         .section-container {
@@ -321,44 +517,76 @@
 
         .section-header {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 4.5rem;
         }
 
         .section-header h2 {
-            font-size: clamp(2rem, 4vw, 3rem);
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
             font-weight: 700;
             margin-bottom: 1rem;
             color: var(--text);
+            line-height: 1.2;
         }
 
         .section-header p {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             color: #666;
             max-width: 600px;
             margin: 0 auto;
+            line-height: 1.7;
         }
 
-        .section-header .accent-line {
-            width: 60px;
+        .accent-line {
+            width: 80px;
             height: 3px;
-            background: var(--accent1);
-            margin: 1rem auto;
+            background: linear-gradient(90deg, var(--accent1), var(--accent2));
+            margin: 1.2rem auto;
             border-radius: 2px;
+            position: relative;
         }
 
-        /* Services Section */
+        .accent-line::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--accent1);
+            border-radius: 50%;
+        }
+
+        /* ===== GLASS MORPHISM CARDS ===== */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 25px 60px rgba(200, 149, 108, 0.15),
+                        0 0 0 1px rgba(200, 149, 108, 0.1);
+            border-color: rgba(200, 149, 108, 0.3);
+        }
+
+        /* ===== SERVICES SECTION ===== */
+        #services {
+            background: linear-gradient(180deg, var(--bg) 0%, rgba(245, 240, 232, 0.3) 100%);
+        }
+
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
             gap: 2rem;
         }
 
         .service-card {
-            background: var(--card);
-            border-radius: 20px;
             padding: 2.5rem;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(200, 149, 108, 0.1);
             position: relative;
             overflow: hidden;
         }
@@ -380,163 +608,289 @@
             transform: scaleX(1);
         }
 
-        .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 60px var(--shadow-hover);
+        .service-icon {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            transition: transform 0.3s ease;
         }
 
-        .service-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .service-card h3 {
-            font-size: 1.3rem;
+            font-size: 1.35rem;
             margin-bottom: 0.75rem;
             color: var(--text);
         }
 
         .service-card p {
-            color: #666;
+            color: #555;
             font-size: 0.95rem;
-            line-height: 1.7;
+            line-height: 1.75;
         }
 
-        /* How It Works */
+        /* ===== HOW IT WORKS ===== */
+        #how-it-works {
+            background: linear-gradient(180deg, rgba(245, 240, 232, 0.3) 0%, var(--bg) 100%);
+        }
+
         .steps-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 2rem;
             position: relative;
         }
 
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 50px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3));
+            opacity: 0.2;
+            display: none;
+        }
+
+        @media (min-width: 968px) {
+            .steps-container::before {
+                display: block;
+            }
+        }
+
         .step-card {
             text-align: center;
-            padding: 2rem;
+            padding: 2.5rem 2rem;
             position: relative;
         }
 
         .step-number {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--accent1), var(--accent2));
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1.5rem;
             font-family: 'Playfair Display', Georgia, serif;
+            box-shadow: 0 8px 25px rgba(200, 149, 108, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover .step-number {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 35px rgba(200, 149, 108, 0.4);
         }
 
         .step-card h3 {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             margin-bottom: 0.75rem;
         }
 
         .step-card p {
-            color: #666;
+            color: #555;
             font-size: 0.95rem;
+            line-height: 1.7;
         }
 
-        /* Quiz Samples */
+        /* ===== QUIZ SAMPLES ===== */
+        #quizzes {
+            background: linear-gradient(180deg, var(--bg) 0%, rgba(200, 149, 108, 0.03) 50%, var(--bg) 100%);
+        }
+
         .quizzes-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
             gap: 3rem;
         }
 
         .quiz-card {
-            background: var(--card);
-            border-radius: 20px;
             padding: 2.5rem;
-            border: 1px solid rgba(200, 149, 108, 0.15);
+            position: relative;
+        }
+
+        .quiz-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .quiz-progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(200, 149, 108, 0.15);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .quiz-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent1), var(--accent2));
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .quiz-score {
+            font-weight: 600;
+            color: var(--accent2);
         }
 
         .quiz-card h3 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             margin-bottom: 0.5rem;
             color: var(--text);
         }
 
         .quiz-card .quiz-subtitle {
             color: #666;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             font-size: 0.95rem;
         }
 
         .quiz-question {
-            background: var(--white);
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 14px;
             padding: 1.5rem;
             margin-bottom: 1rem;
             border-left: 4px solid var(--accent1);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .quiz-question:hover {
             box-shadow: 0 4px 20px var(--shadow);
+            transform: translateX(4px);
         }
 
         .quiz-question-text {
             font-weight: 600;
             margin-bottom: 1rem;
             font-size: 1.05rem;
+            padding-right: 1rem;
         }
 
         .quiz-answer-btn {
-            background: var(--accent1);
+            background: linear-gradient(135deg, var(--accent1), #d4a574);
             color: white;
             border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
+            padding: 0.6rem 1.4rem;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 0.9rem;
             font-weight: 500;
             transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-answer-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+
+        .quiz-answer-btn:hover::after {
+            width: 200px;
+            height: 200px;
         }
 
         .quiz-answer-btn:hover {
-            background: #b8845c;
-            transform: scale(1.02);
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(200, 149, 108, 0.3);
         }
 
         .quiz-answer-btn.revealed {
-            background: var(--accent2);
+            background: linear-gradient(135deg, var(--accent2), #8fb894);
         }
 
         .quiz-answer {
-            display: none;
-            margin-top: 1rem;
-            padding: 1rem;
-            background: rgba(122, 158, 126, 0.1);
-            border-radius: 8px;
-            border: 1px solid rgba(122, 158, 126, 0.2);
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            padding: 0 1rem;
+            background: rgba(122, 158, 126, 0.08);
+            border-radius: 10px;
+            border: 1px solid rgba(122, 158, 126, 0.15);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 0;
         }
 
         .quiz-answer.show {
-            display: block;
-            animation: fadeIn 0.4s ease;
+            max-height: 200px;
+            opacity: 1;
+            padding: 1rem;
+            margin-top: 0.75rem;
         }
 
         .quiz-answer strong {
             color: var(--accent2);
+            display: block;
+            margin-bottom: 0.25rem;
         }
 
         .quiz-answer .explanation {
             margin-top: 0.5rem;
             font-size: 0.9rem;
-            color: #666;
+            color: #555;
+            line-height: 1.6;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Confetti effect */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 10;
         }
 
-        /* Styles Gallery */
+        .confetti-piece {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            opacity: 0;
+            animation: confettiFall 1.5s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100px) rotate(720deg) scale(0);
+            }
+        }
+
+        /* ===== STYLES GALLERY ===== */
+        #styles {
+            background: linear-gradient(180deg, var(--bg) 0%, rgba(122, 158, 126, 0.03) 50%, var(--bg) 100%);
+        }
+
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -544,17 +898,18 @@
         }
 
         .gallery-item {
-            border-radius: 16px;
+            border-radius: 20px;
             overflow: hidden;
             position: relative;
-            height: 220px;
+            height: 240px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--glass-border);
         }
 
         .gallery-item:hover {
-            transform: scale(1.02);
-            box-shadow: 0 15px 40px var(--shadow-hover);
+            transform: scale(1.03) translateY(-5px);
+            box-shadow: 0 25px 50px rgba(44, 44, 44, 0.15);
         }
 
         .gallery-item .gallery-bg {
@@ -563,11 +918,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 600;
             color: white;
             text-align: center;
             padding: 1.5rem;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover .gallery-bg {
+            transform: scale(1.05);
         }
 
         .gallery-item:nth-child(1) .gallery-bg {
@@ -591,13 +951,15 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 1.5rem;
-            background: linear-gradient(transparent, rgba(0,0,0,0.6));
+            padding: 2rem 1.5rem 1.5rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
             color: white;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
         }
 
         .gallery-overlay h4 {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             margin-bottom: 0.25rem;
         }
 
@@ -606,59 +968,60 @@
             opacity: 0.85;
         }
 
-        /* Pricing */
+        /* ===== PRICING ===== */
+        #pricing {
+            background: linear-gradient(180deg, var(--bg) 0%, rgba(91, 127, 165, 0.03) 50%, var(--bg) 100%);
+        }
+
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
             align-items: stretch;
         }
 
         .pricing-card {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 2.5rem;
+            padding: 2.8rem;
             text-align: center;
-            border: 1px solid rgba(200, 149, 108, 0.1);
-            transition: all 0.3s ease;
             position: relative;
         }
 
         .pricing-card.featured {
             border: 2px solid var(--accent1);
-            transform: scale(1.05);
+            transform: scale(1.03);
+            background: rgba(245, 240, 232, 0.75);
         }
 
         .pricing-card.featured::before {
             content: 'Популярный';
             position: absolute;
-            top: -12px;
+            top: -14px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--accent1);
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
             color: white;
-            padding: 0.3rem 1rem;
+            padding: 0.4rem 1.2rem;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .pricing-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 60px var(--shadow-hover);
+            transform: translateY(-8px) scale(1.01);
         }
 
         .pricing-card.featured:hover {
-            transform: scale(1.05) translateY(-5px);
+            transform: scale(1.03) translateY(-8px);
         }
 
         .pricing-card h3 {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             margin-bottom: 0.5rem;
         }
 
         .pricing-card .price {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: 700;
             color: var(--accent1);
             margin: 1rem 0;
@@ -678,18 +1041,19 @@
         }
 
         .pricing-features li {
-            padding: 0.5rem 0;
+            padding: 0.6rem 0;
             border-bottom: 1px solid rgba(0,0,0,0.05);
             font-size: 0.95rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
         .pricing-features li::before {
             content: '✓';
             color: var(--accent2);
             font-weight: 700;
+            font-size: 1rem;
         }
 
         .pricing-card .btn {
@@ -697,18 +1061,28 @@
             margin-top: 1rem;
         }
 
-        /* FAQ */
+        /* ===== FAQ ===== */
+        #faq {
+            background: linear-gradient(180deg, var(--bg) 0%, rgba(245, 240, 232, 0.3) 100%);
+        }
+
         .faq-container {
             max-width: 800px;
             margin: 0 auto;
         }
 
         .faq-item {
-            background: var(--card);
-            border-radius: 12px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
             margin-bottom: 1rem;
             overflow: hidden;
-            border: 1px solid rgba(200, 149, 108, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(200, 149, 108, 0.2);
         }
 
         .faq-question {
@@ -726,10 +1100,10 @@
         }
 
         .faq-question .faq-toggle {
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            background: var(--accent1);
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
             color: white;
             display: flex;
             align-items: center;
@@ -755,14 +1129,14 @@
         }
 
         .faq-answer p {
-            color: #666;
+            color: #555;
             font-size: 0.95rem;
-            line-height: 1.7;
+            line-height: 1.75;
         }
 
-        /* Contact Form */
+        /* ===== CONTACT FORM ===== */
         .contact-section {
-            background: var(--card);
+            background: linear-gradient(180deg, rgba(245, 240, 232, 0.3) 0%, var(--bg) 100%);
         }
 
         .contact-grid {
@@ -773,14 +1147,14 @@
         }
 
         .contact-info h3 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin-bottom: 1rem;
         }
 
         .contact-info p {
-            color: #666;
+            color: #555;
             margin-bottom: 2rem;
-            line-height: 1.7;
+            line-height: 1.8;
         }
 
         .contact-details {
@@ -793,6 +1167,11 @@
             align-items: center;
             gap: 0.75rem;
             font-size: 0.95rem;
+            transition: transform 0.3s;
+        }
+
+        .contact-details li:hover {
+            transform: translateX(5px);
         }
 
         .contact-details li span:first-child {
@@ -800,9 +1179,11 @@
         }
 
         .contact-form {
-            background: var(--white);
-            padding: 2.5rem;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            padding: 2.8rem;
             border-radius: 20px;
+            border: 1px solid var(--glass-border);
             box-shadow: 0 10px 40px var(--shadow);
         }
 
@@ -821,18 +1202,20 @@
         .form-group textarea {
             width: 100%;
             padding: 0.875rem 1rem;
-            border: 2px solid rgba(200, 149, 108, 0.2);
-            border-radius: 10px;
+            border: 2px solid rgba(200, 149, 108, 0.15);
+            border-radius: 12px;
             font-size: 1rem;
             font-family: 'Inter', sans-serif;
-            transition: border-color 0.3s;
-            background: var(--bg);
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.6);
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
             border-color: var(--accent1);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 0 4px rgba(200, 149, 108, 0.1);
         }
 
         .form-group textarea {
@@ -844,16 +1227,26 @@
             width: 100%;
         }
 
-        /* Footer */
+        /* ===== FOOTER ===== */
         footer {
             background: var(--text);
             color: rgba(255, 255, 255, 0.8);
-            padding: 4rem 2rem 2rem;
+            padding: 0;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3), var(--accent1));
         }
 
         .footer-container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 4rem 2rem 2rem;
         }
 
         .footer-grid {
@@ -864,23 +1257,36 @@
         }
 
         .footer-brand h3 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             color: white;
             margin-bottom: 1rem;
         }
 
         .footer-brand p {
             font-size: 0.9rem;
-            line-height: 1.7;
+            line-height: 1.8;
             opacity: 0.7;
         }
 
         .footer-links h4 {
             color: white;
             font-size: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
             font-family: 'Inter', sans-serif;
             font-weight: 600;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-links h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--accent1);
+            border-radius: 1px;
         }
 
         .footer-links ul {
@@ -888,70 +1294,108 @@
         }
 
         .footer-links li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
         }
 
         .footer-links a {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.65);
             text-decoration: none;
             font-size: 0.9rem;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            display: inline-block;
         }
 
         .footer-links a:hover {
             color: var(--accent1);
+            transform: translateX(4px);
         }
 
         .social-links {
             display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
+            gap: 0.75rem;
+            margin-top: 1.2rem;
         }
 
         .social-links a {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             text-decoration: none;
-            transition: all 0.3s;
-            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .social-links a:hover {
             background: var(--accent1);
-            transform: translateY(-3px);
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 8px 20px rgba(200, 149, 108, 0.3);
+            border-color: var(--accent1);
         }
 
         .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
             padding-top: 2rem;
             text-align: center;
             font-size: 0.85rem;
-            opacity: 0.6;
+            opacity: 0.55;
         }
 
-        /* Responsive */
+        /* ===== SCROLL ANIMATIONS ===== */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered children */
+        .stagger-children .animate-on-scroll:nth-child(1) { transition-delay: 0ms; }
+        .stagger-children .animate-on-scroll:nth-child(2) { transition-delay: 100ms; }
+        .stagger-children .animate-on-scroll:nth-child(3) { transition-delay: 200ms; }
+        .stagger-children .animate-on-scroll:nth-child(4) { transition-delay: 300ms; }
+        .stagger-children .animate-on-scroll:nth-child(5) { transition-delay: 400ms; }
+        .stagger-children .animate-on-scroll:nth-child(6) { transition-delay: 500ms; }
+        .stagger-children .animate-on-scroll:nth-child(7) { transition-delay: 600ms; }
+        .stagger-children .animate-on-scroll:nth-child(8) { transition-delay: 700ms; }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 968px) {
             .nav-links {
                 display: none;
-                position: absolute;
-                top: 100%;
+                position: fixed;
+                top: 0;
                 left: 0;
                 right: 0;
-                background: var(--bg);
+                bottom: 0;
+                background: rgba(237, 233, 222, 0.98);
+                backdrop-filter: blur(20px);
                 flex-direction: column;
-                padding: 1rem 2rem;
-                gap: 1rem;
-                box-shadow: 0 10px 30px var(--shadow);
+                padding: 6rem 2rem 2rem;
+                gap: 1.5rem;
+                box-shadow: none;
+                transform: translateX(100%);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 999;
             }
 
             .nav-links.active {
                 display: flex;
+                transform: translateX(0);
+            }
+
+            .nav-links a {
+                font-size: 1.2rem;
+                padding: 0.5rem 0;
             }
 
             .mobile-menu-btn {
@@ -976,13 +1420,13 @@
             }
 
             .pricing-card.featured:hover {
-                transform: translateY(-5px);
+                transform: translateY(-8px) scale(1.01);
             }
         }
 
         @media (max-width: 640px) {
             section {
-                padding: 4rem 1.25rem;
+                padding: 5rem 1.25rem;
             }
 
             .footer-grid {
@@ -994,20 +1438,17 @@
             }
 
             .hero-content h1 {
-                font-size: 2.2rem;
+                font-size: 2.4rem;
             }
-        }
 
-        /* Animations on scroll */
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
-        }
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
 
-        .animate-on-scroll.visible {
-            opacity: 1;
-            transform: translateY(0);
+            .contact-form {
+                padding: 1.8rem;
+            }
         }
     </style>
 </head>
@@ -1034,14 +1475,27 @@
 
     <!-- Hero Section -->
     <section class="hero" id="hero">
-        <div class="hero-bg">
-            <div class="hero-gradient"></div>
+        <video class="hero-video-bg" autoplay muted loop playsinline poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect fill='%23ede9de'/%3E%3C/svg%3E">
+            <source src="https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-overlay-2"></div>
+        <div class="floating-shapes">
+            <div class="shape shape-circle"></div>
+            <div class="shape shape-square"></div>
+            <div class="shape shape-triangle"></div>
+            <div class="shape shape-ring"></div>
+            <div class="shape shape-dots"></div>
+            <div class="shape shape-line"></div>
         </div>
-        <div class="hero-particles" id="particles"></div>
         <div class="hero-content">
+            <div class="hero-badge">✨ Создано с любовью к игре</div>
             <h1>Викторины, которые влюбляют в игру</h1>
             <p>Создаём уникальные квизы для любого случая — от детских праздников до корпоративных мероприятий. ИИ-генерация, стильный дизайн, незабываемые эмоции.</p>
-            <a href="#contact" class="btn btn-primary">Заказать викторину</a>
+            <div class="hero-buttons">
+                <a href="#contact" class="btn btn-primary">Заказать викторину</a>
+                <a href="#quizzes" class="btn btn-secondary">Попробовать демо</a>
+            </div>
         </div>
         <div class="scroll-indicator">
             <span></span>
@@ -1056,33 +1510,33 @@
                 <div class="accent-line"></div>
                 <p>Создаём викторины для любых целей и аудиторий</p>
             </div>
-            <div class="services-grid">
-                <div class="service-card animate-on-scroll">
+            <div class="services-grid stagger-children">
+                <div class="service-card glass-card animate-on-scroll">
                     <div class="service-icon">🧒</div>
                     <h3>Детские викторины</h3>
                     <p>Весёлые и развивающие квизы для детских праздников, дней рождения и образовательных мероприятий. Яркий дизайн, понятные вопросы.</p>
                 </div>
-                <div class="service-card animate-on-scroll">
+                <div class="service-card glass-card animate-on-scroll">
                     <div class="service-icon">💼</div>
                     <h3>Бизнес-викторины</h3>
                     <p>Тимбилдинг, корпоративы, конференции. Викторины для сплочения коллектива и проверки знаний в увлекательной форме.</p>
                 </div>
-                <div class="service-card animate-on-scroll">
+                <div class="service-card glass-card animate-on-scroll">
                     <div class="service-icon">🎉</div>
                     <h3>Викторины на мероприятия</h3>
                     <p>Свадьбы, юбилеи, фестивали, вечеринки. Интерактивные развлечения, которые делают событие незабываемым.</p>
                 </div>
-                <div class="service-card animate-on-scroll">
+                <div class="service-card glass-card animate-on-scroll">
                     <div class="service-icon">😂</div>
                     <h3>Юмористические</h3>
                     <p>Смешные вопросы, неожиданные ответы, море юмера. Идеально для вечеринок и поднятия настроения.</p>
                 </div>
-                <div class="service-card animate-on-scroll">
+                <div class="service-card glass-card animate-on-scroll">
                     <div class="service-icon">📚</div>
                     <h3>Образовательные</h3>
                     <p>Для школ, вузов, курсов и тренингов. Проверка знаний в игровой форме с объяснениями и рейтингом.</p>
                 </div>
-                <div class="service-card animate-on-scroll">
+                <div class="service-card glass-card animate-on-scroll">
                     <div class="service-icon">👤</div>
                     <h3>Индивидуальные</h3>
                     <p>Персонализированные викторины о человеке, компании или событии. Уникальный контент, созданный специально для вас.</p>
@@ -1099,23 +1553,23 @@
                 <div class="accent-line"></div>
                 <p>Четыре простых шага до вашей идеальной викторины</p>
             </div>
-            <div class="steps-container">
-                <div class="step-card animate-on-scroll">
+            <div class="steps-container stagger-children">
+                <div class="step-card glass-card animate-on-scroll">
                     <div class="step-number">1</div>
                     <h3>Расскажите о событии</h3>
                     <p>Опишите формат, аудиторию и тематику. Мы подберём идеальную структуру.</p>
                 </div>
-                <div class="step-card animate-on-scroll">
+                <div class="step-card glass-card animate-on-scroll">
                     <div class="step-number">2</div>
                     <h3>Создаём контент</h3>
                     <p>Генерируем вопросы с помощью ИИ и адаптируем под ваши пожелания.</p>
                 </div>
-                <div class="step-card animate-on-scroll">
+                <div class="step-card glass-card animate-on-scroll">
                     <div class="step-number">3</div>
                     <h3>Оформляем стиль</h3>
                     <p>Подбираем дизайн, цвета и анимации под вашу тематику.</p>
                 </div>
-                <div class="step-card animate-on-scroll">
+                <div class="step-card glass-card animate-on-scroll">
                     <div class="step-number">4</div>
                     <h3>Запускайте игру!</h3>
                     <p>Получите готовую викторину в формате HTML или PDF. Играйте с удовольствием!</p>
@@ -1134,11 +1588,17 @@
             </div>
             <div class="quizzes-container">
                 <!-- Quiz 1 -->
-                <div class="quiz-card animate-on-scroll">
+                <div class="quiz-card glass-card animate-on-scroll" id="quiz-1">
                     <h3>🐾 Угадай животное</h3>
                     <p class="quiz-subtitle">Три вопроса о животных мира</p>
+                    <div class="quiz-progress">
+                        <span class="quiz-score" id="score-1">0/3</span>
+                        <div class="quiz-progress-bar">
+                            <div class="quiz-progress-fill" id="progress-1"></div>
+                        </div>
+                    </div>
                     
-                    <div class="quiz-question" data-quiz="1">
+                    <div class="quiz-question" data-quiz="1" data-question="1">
                         <div class="quiz-question-text">1. Какое животное самое быстрое на суше?</div>
                         <button class="quiz-answer-btn" onclick="revealAnswer(1, 1)">Показать ответ</button>
                         <div class="quiz-answer" id="answer-1-1">
@@ -1147,7 +1607,7 @@
                         </div>
                     </div>
 
-                    <div class="quiz-question" data-quiz="1">
+                    <div class="quiz-question" data-quiz="1" data-question="2">
                         <div class="quiz-question-text">2. У какого животного полоски — у зебры или жирафа?</div>
                         <button class="quiz-answer-btn" onclick="revealAnswer(1, 2)">Показать ответ</button>
                         <div class="quiz-answer" id="answer-1-2">
@@ -1156,7 +1616,7 @@
                         </div>
                     </div>
 
-                    <div class="quiz-question" data-quiz="1">
+                    <div class="quiz-question" data-quiz="1" data-question="3">
                         <div class="quiz-question-text">3. Какое млекопитающее самое большое?</div>
                         <button class="quiz-answer-btn" onclick="revealAnswer(1, 3)">Показать ответ</button>
                         <div class="quiz-answer" id="answer-1-3">
@@ -1167,11 +1627,17 @@
                 </div>
 
                 <!-- Quiz 2 -->
-                <div class="quiz-card animate-on-scroll">
+                <div class="quiz-card glass-card animate-on-scroll" id="quiz-2">
                     <h3>🎬 Кино-викторина</h3>
                     <p class="quiz-subtitle">Проверьте свои знания о кино</p>
+                    <div class="quiz-progress">
+                        <span class="quiz-score" id="score-2">0/3</span>
+                        <div class="quiz-progress-bar">
+                            <div class="quiz-progress-fill" id="progress-2"></div>
+                        </div>
+                    </div>
                     
-                    <div class="quiz-question" data-quiz="2">
+                    <div class="quiz-question" data-quiz="2" data-question="1">
                         <div class="quiz-question-text">1. Какой фильм получил «Оскар» за лучший фильм в 2020 году?</div>
                         <button class="quiz-answer-btn" onclick="revealAnswer(2, 1)">Показать ответ</button>
                         <div class="quiz-answer" id="answer-2-1">
@@ -1180,7 +1646,7 @@
                         </div>
                     </div>
 
-                    <div class="quiz-question" data-quiz="2">
+                    <div class="quiz-question" data-quiz="2" data-question="2">
                         <div class="quiz-question-text">2. Кто режиссёр фильма «Начало» (Inception)?</div>
                         <button class="quiz-answer-btn" onclick="revealAnswer(2, 2)">Показать ответ</button>
                         <div class="quiz-answer" id="answer-2-2">
@@ -1189,7 +1655,7 @@
                         </div>
                     </div>
 
-                    <div class="quiz-question" data-quiz="2">
+                    <div class="quiz-question" data-quiz="2" data-question="3">
                         <div class="quiz-question-text">3. В каком году вышел первый фильм «Звёздные войны»?</div>
                         <button class="quiz-answer-btn" onclick="revealAnswer(2, 3)">Показать ответ</button>
                         <div class="quiz-answer" id="answer-2-3">
@@ -1210,7 +1676,7 @@
                 <div class="accent-line"></div>
                 <p>Выберите визуальный стиль для вашей викторины</p>
             </div>
-            <div class="gallery-grid">
+            <div class="gallery-grid stagger-children">
                 <div class="gallery-item animate-on-scroll">
                     <div class="gallery-bg">Классический<br>Деловой</div>
                     <div class="gallery-overlay">
@@ -1251,8 +1717,8 @@
                 <div class="accent-line"></div>
                 <p>Выберите подходящий вариант для вашего мероприятия</p>
             </div>
-            <div class="pricing-grid">
-                <div class="pricing-card animate-on-scroll">
+            <div class="pricing-grid stagger-children">
+                <div class="pricing-card glass-card animate-on-scroll">
                     <h3>Базовый</h3>
                     <div class="price">от 3 000 <span>₽</span></div>
                     <ul class="pricing-features">
@@ -1264,7 +1730,7 @@
                     </ul>
                     <a href="#contact" class="btn btn-secondary" style="color: var(--text); border-color: var(--accent1);">Заказать</a>
                 </div>
-                <div class="pricing-card featured animate-on-scroll">
+                <div class="pricing-card glass-card featured animate-on-scroll">
                     <h3>Оптимальный</h3>
                     <div class="price">от 7 500 <span>₽</span></div>
                     <ul class="pricing-features">
@@ -1277,7 +1743,7 @@
                     </ul>
                     <a href="#contact" class="btn btn-primary">Заказать</a>
                 </div>
-                <div class="pricing-card animate-on-scroll">
+                <div class="pricing-card glass-card animate-on-scroll">
                     <h3>Премиум</h3>
                     <div class="price">от 15 000 <span>₽</span></div>
                     <ul class="pricing-features">
@@ -1302,8 +1768,8 @@
                 <div class="accent-line"></div>
                 <p>Ответы на популярные вопросы о нашем сервисе</p>
             </div>
-            <div class="faq-container">
-                <div class="faq-item animate-on-scroll">
+            <div class="faq-container stagger-children">
+                <div class="faq-item glass-card animate-on-scroll">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>Сколько времени занимает создание викторины?</span>
                         <span class="faq-toggle">+</span>
@@ -1312,7 +1778,7 @@
                         <p>Время изготовления зависит от тарифа: от 1 до 3 рабочих дней. Для срочных заказов мы предлагаем ускоренное изготовление за дополнительную плату.</p>
                     </div>
                 </div>
-                <div class="faq-item animate-on-scroll">
+                <div class="faq-item glass-card animate-on-scroll">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>Можно ли редактировать вопросы после создания?</span>
                         <span class="faq-toggle">+</span>
@@ -1321,7 +1787,7 @@
                         <p>Да! Мы предоставляем исходный файл в формате HTML, который вы можете редактировать самостоятельно. Также вы можете заказать дополнительные правки у нас.</p>
                     </div>
                 </div>
-                <div class="faq-item animate-on-scroll">
+                <div class="faq-item glass-card animate-on-scroll">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>Какой формат лучше для проведения мероприятия?</span>
                         <span class="faq-toggle">+</span>
@@ -1330,7 +1796,7 @@
                         <p>HTML-формат идеален для проведения на экране или проекторе. Участники могут отвечать устно или через телефоны. Для печатного варианта подойдёт PDF.</p>
                     </div>
                 </div>
-                <div class="faq-item animate-on-scroll">
+                <div class="faq-item glass-card animate-on-scroll">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>Используете ли вы ИИ для создания вопросов?</span>
                         <span class="faq-toggle">+</span>
@@ -1339,7 +1805,7 @@
                         <p>Да, мы используем ИИ для генерации вопросов и пояснений. Это значительно ускоряет процесс и обеспечивает разнообразие формулировок. Все вопросы проходят проверку качества.</p>
                     </div>
                 </div>
-                <div class="faq-item animate-on-scroll">
+                <div class="faq-item glass-card animate-on-scroll">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>Можно ли добавить медиа-контент (фото, видео)?</span>
                         <span class="faq-toggle">+</span>
@@ -1348,7 +1814,7 @@
                         <p>Конечно! В тарифе «Премиум» мы поддерживаем добавление изображений, аудио и видео к вопросам. Это делает викторину ещё более увлекательной.</p>
                     </div>
                 </div>
-                <div class="faq-item animate-on-scroll">
+                <div class="faq-item glass-card animate-on-scroll">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>Есть ли поддержка для ведущего мероприятия?</span>
                         <span class="faq-toggle">+</span>
@@ -1380,7 +1846,7 @@
                         <li><span>⏰</span> Пн-Пт: 9:00 — 19:00</li>
                     </ul>
                 </div>
-                <form class="contact-form animate-on-scroll" onsubmit="handleSubmit(event)">
+                <form class="contact-form glass-card animate-on-scroll" onsubmit="handleSubmit(event)">
                     <div class="form-group">
                         <label for="name">Ваше имя</label>
                         <input type="text" id="name" name="name" placeholder="Иван Иванов" required>
@@ -1435,7 +1901,7 @@
                     <h4>Контакты</h4>
                     <ul>
                         <li><a href="mailto:hello@svoigra.ru">hello@svoigra.ru</a></li>
-                        <li><a href="tel:+79991234567">+7 (999) 123-45-67</a></li>
+                        <li><a href="tel:+799****4567">+7 (999) 123-45-67</a></li>
                         <li><a href="#">Telegram</a></li>
                         <li><a href="#">WhatsApp</a></li>
                     </ul>
@@ -1463,40 +1929,76 @@
         const navLinks = document.getElementById('navLinks');
         mobileMenuBtn.addEventListener('click', () => {
             navLinks.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
         });
 
         // Close mobile menu on link click
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 navLinks.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
             });
         });
 
-        // Create particles for hero
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                particle.style.animationDelay = Math.random() * 10 + 's';
-                particle.style.width = (Math.random() * 4 + 3) + 'px';
-                particle.style.height = particle.style.width;
-                container.appendChild(particle);
-            }
-        }
-        createParticles();
+        // Quiz state tracking
+        const quizState = {
+            1: { revealed: 0, total: 3 },
+            2: { revealed: 0, total: 3 }
+        };
 
-        // Reveal quiz answer
+        // Reveal quiz answer with enhanced effects
         function revealAnswer(quizNum, questionNum) {
             const answerEl = document.getElementById(`answer-${quizNum}-${questionNum}`);
             const btn = answerEl.previousElementSibling;
+            
+            if (answerEl.classList.contains('show')) return;
             
             answerEl.classList.add('show');
             btn.textContent = 'Ответ показан ✓';
             btn.classList.add('revealed');
             btn.disabled = true;
+            
+            // Update progress
+            quizState[quizNum].revealed++;
+            const scoreEl = document.getElementById(`score-${quizNum}`);
+            const progressEl = document.getElementById(`progress-${quizNum}`);
+            
+            scoreEl.textContent = `${quizState[quizNum].revealed}/${quizState[quizNum].total}`;
+            progressEl.style.width = `${(quizState[quizNum].revealed / quizState[quizNum].total) * 100}%`;
+            
+            // Confetti effect on correct answer
+            createConfetti(answerEl);
+            
+            // Animate score
+            scoreEl.style.transform = 'scale(1.3)';
+            scoreEl.style.transition = 'transform 0.3s ease';
+            setTimeout(() => {
+                scoreEl.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        // Confetti effect
+        function createConfetti(container) {
+            const colors = ['#c8956c', '#7a9e7e', '#5b7fa5', '#d4a574', '#8fb894'];
+            const confettiContainer = document.createElement('div');
+            confettiContainer.className = 'confetti-container';
+            container.style.position = 'relative';
+            container.appendChild(confettiContainer);
+            
+            for (let i = 0; i < 12; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = `${Math.random() * 100}%`;
+                piece.style.top = `${Math.random() * 50}%`;
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                piece.style.width = `${Math.random() * 6 + 4}px`;
+                piece.style.height = `${Math.random() * 6 + 4}px`;
+                piece.style.animationDelay = `${Math.random() * 0.3}s`;
+                confettiContainer.appendChild(piece);
+            }
+            
+            setTimeout(() => confettiContainer.remove(), 2000);
         }
 
         // FAQ accordion
@@ -1532,10 +2034,10 @@
             }, 3000);
         }
 
-        // Scroll animations
+        // Scroll animations with IntersectionObserver
         const observerOptions = {
             threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            rootMargin: '0px 0px -60px 0px'
         };
 
         const observer = new IntersectionObserver((entries) => {
@@ -1548,6 +2050,16 @@
 
         document.querySelectorAll('.animate-on-scroll').forEach(el => {
             observer.observe(el);
+        });
+
+        // Parallax effect on hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroContent = document.querySelector('.hero-content');
+            if (heroContent && scrolled < window.innerHeight) {
+                heroContent.style.transform = `translateY(${scrolled * 0.3}px)`;
+                heroContent.style.opacity = 1 - (scrolled / (window.innerHeight * 0.8));
+            }
         });
 
         // Smooth scroll for anchor links
